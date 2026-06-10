@@ -5707,21 +5707,93 @@ export default function TierBridge() {
                     onClick={async () => {
                       setIsCheckoutLoading(true)
                       try {
+                        // Dynamically load Razorpay SDK
+                        const scriptLoaded = await new Promise((resolve) => {
+                          if ((window as any).Razorpay) {
+                            resolve(true)
+                            return
+                          }
+                          const script = document.createElement('script')
+                          script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+                          script.onload = () => resolve(true)
+                          script.onerror = () => resolve(false)
+                          document.body.appendChild(script)
+                        })
+
+                        if (!scriptLoaded) {
+                          alert('Failed to load Razorpay SDK. Please check your internet connection.')
+                          setIsCheckoutLoading(false)
+                          return
+                        }
+
+                        // Create order on backend
                         const res = await fetch('/api/payments/create', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({ name: studentName, email: studentEmail })
                         })
                         const data = await res.json()
-                        if (data.success && data.paymentUrl) {
-                          window.location.href = data.paymentUrl
-                        } else {
+                        if (!data.success) {
                           alert(`Payment creation failed: ${data.error || 'Unknown error'}`)
+                          setIsCheckoutLoading(false)
+                          return
                         }
+
+                        // Configure and open Razorpay Checkout modal
+                        const options = {
+                          key: data.key,
+                          amount: data.amount,
+                          currency: data.currency,
+                          name: "TierBridge",
+                          description: "TierBridge Pro 6-Months Access",
+                          order_id: data.orderId,
+                          handler: async function (response: any) {
+                            setIsCheckoutLoading(true)
+                            try {
+                              const verifyRes = await fetch('/api/payments/verify', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  razorpay_payment_id: response.razorpay_payment_id,
+                                  razorpay_order_id: response.razorpay_order_id,
+                                  razorpay_signature: response.razorpay_signature,
+                                  email: studentEmail
+                                })
+                              })
+                              const verifyData = await verifyRes.json()
+                              if (verifyData.success) {
+                                setIsPro(true)
+                                setUpgradeOpen(false)
+                                alert('🎉 Upgrade Successful! Welcome to TierBridge Pro.')
+                              } else {
+                                alert(`Payment verification failed: ${verifyData.error || 'Unknown error'}`)
+                              }
+                            } catch (err: any) {
+                              console.error('Verification error:', err)
+                              alert('Payment verification failed. Please contact support.')
+                            } finally {
+                              setIsCheckoutLoading(false)
+                            }
+                          },
+                          prefill: {
+                            name: studentName,
+                            email: studentEmail,
+                          },
+                          theme: {
+                            color: "#6366f1"
+                          },
+                          modal: {
+                            ondismiss: function () {
+                              setIsCheckoutLoading(false)
+                            }
+                          }
+                        }
+
+                        const rzp = new (window as any).Razorpay(options)
+                        rzp.open()
                       } catch (err: any) {
                         console.error('Payment initiation error:', err)
                         alert(`Unable to connect to payment server: ${err.message || 'Please try again.'}`)
-                      } finally {
                         setIsCheckoutLoading(false)
                       }
                     }}
@@ -5759,7 +5831,7 @@ export default function TierBridge() {
               {/* SSL + trust footer */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 10, color: S.t4 }}>
                 <span style={{ color: S.green, fontSize: 12 }}>🔒</span>
-                <span>Secure 256-bit SSL. Payments via Instamojo. No subscription auto-renewals.</span>
+                <span>Secure UPI & Card payments processed via Razorpay. No auto-renewals.</span>
               </div>
 
             </div>
