@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
 import {
   BRANCHES, BRIEF_BRANCHES, BRIEFS, FAQ, JOBS, PATHS, PLAN_FEATURES,
-  briefBranch, type Branch,
+  briefBranch, type Branch, type Job,
 } from '@/content/site'
 import WaitlistForm from './WaitlistForm'
 import { Nav, Footer, Check } from './Chrome'
@@ -43,7 +43,7 @@ function useReveal() {
   }, [])
 }
 
-export default function Home() {
+export default function Home({ liveJobs }: { liveJobs?: Job[] }) {
   const [branch, setBranch] = useState<Branch>('ECE')
   const [part, setPart] = useState<Part>('skill')
   const [jobFilter, setJobFilter] = useState<'All' | Branch>('All')
@@ -54,7 +54,8 @@ export default function Home() {
   const bb = briefBranch(branch)
   const brief = BRIEFS[bb]
   const mailJobs = [...JOBS.filter(j => j.branch === bb), ...JOBS.filter(j => j.branch !== bb)].slice(0, 3)
-  const jobs = JOBS.filter(j => jobFilter === 'All' || j.branch === jobFilter)
+  const isLive = !!liveJobs?.length
+  const jobs = (isLive ? liveJobs! : JOBS).filter(j => jobFilter === 'All' || j.branch === jobFilter)
     .sort((a, b) => Number(!!b.featured) - Number(!!a.featured))
 
   const focusPart = (p: Part) => {
@@ -209,11 +210,11 @@ export default function Home() {
           </div>
           <div className="jobtools">
             <Chips items={['All', 'ECE', 'MECH', 'CIVIL', 'CSE', 'IT', 'MCA'] as const} selected={jobFilter as 'All'} onPick={v => setJobFilter(v as 'All' | Branch)} label="Filter jobs by branch" />
-            <span className="mono muted">{jobs.length} sample roles · live listings start with the first brief</span>
+            <span className="mono muted">{isLive ? <>{jobs.length} live roles · <a href="/jobs">see all</a></> : `${jobs.length} sample roles · live listings start with the first brief`}</span>
           </div>
           <div className="joblist">
             {jobs.map(j => (
-              <article key={j.title} className={`job${j.featured ? ' featured' : ''}`}>
+              <article key={j.href ?? j.title} className={`job${j.featured ? ' featured' : ''}`}>
                 <div className="jtop">
                   <div><h3>{j.title}</h3><div className="jmeta">{j.company} · {j.location}</div></div>
                   {j.featured && <span className="badge feat">Featured</span>}
@@ -223,7 +224,7 @@ export default function Home() {
                   <span className="tag">{j.branch}</span>
                 </div>
                 <span className="badge ver" style={{ justifySelf: 'start' }}>✓ Verified · checked {j.checked}</span>
-                <div className="jfoot"><span className="sal">{j.salary}</span><span className="muted">Apply on official site →</span></div>
+                <div className="jfoot"><span className="sal">{j.salary}</span>{j.href ? <a className="apply" href={j.href} rel="nofollow">Apply on official site →</a> : <span className="muted">Apply on official site →</span>}</div>
               </article>
             ))}
           </div>

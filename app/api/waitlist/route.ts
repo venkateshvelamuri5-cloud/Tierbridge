@@ -22,10 +22,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Signups are not open yet. Please try again soon.' }, { status: 503 })
   }
 
-  // Re-signing up just updates the branch, so the response never reveals whether an email exists.
+  // Re-signing up updates the branch and resubscribes, so the response never reveals whether an email exists.
   const { error } = await db
     .from('waitlist')
-    .upsert({ email, branch, source: 'website' }, { onConflict: 'email' })
+    .upsert({ email, branch, source: 'website', status: 'active', unsubscribed_at: null }, { onConflict: 'email' })
 
   if (error) {
     console.error('Waitlist insert failed:', error.message)

@@ -238,3 +238,64 @@ body{margin:0}
 .legal h1{font-size:clamp(32px,4vw,48px)}
 .legal h2{font-size:22px;margin-top:10px}
 .legal p,.legal li{color:var(--muted)}
+
+/* inner pages: jobs, archive, report, unsubscribe */
+.page{padding-block:clamp(40px,6vw,72px) 72px}
+.page .head{margin-bottom:28px}
+.page h1{font-size:clamp(34px,4.6vw,56px);font-weight:800}
+.chiprow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.chiprow a{text-decoration:none}
+.empty{background:var(--ink-2);border:1px dashed var(--line);border-radius:16px;padding:28px;color:var(--muted)}
+.job a.apply{color:var(--marigold);font-weight:600;text-decoration:none}
+.list{display:grid;gap:10px}
+.row{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;justify-content:space-between;background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:16px 18px;text-decoration:none}
+.row:hover{border-color:#3a4a6c}
+.row strong{font:700 17px var(--display)}
+.brief{max-width:720px;display:grid;gap:26px}
+.brief section{display:grid;gap:10px}
+.brief h2{font-size:22px}
+.brief h3{font-size:18px}
+.brief p{color:var(--muted)}
+.brief a{color:var(--cyan)}
+.box{background:var(--ink-2);border:1px solid var(--line);border-radius:16px;padding:20px}
+.form{display:grid;gap:14px;max-width:620px}
+.form label{display:grid;gap:6px;font-weight:600;font-size:15px}
+.form input,.form textarea,.form select{font:16px var(--body);background:var(--ink-2);border:1px solid var(--line);color:var(--fg);border-radius:10px;padding:11px 12px;width:100%}
+.form textarea{min-height:120px;resize:vertical}
+.form .hp{position:absolute;left:-9999px}
+.form .btn{justify-self:start}
+
+/* admin */
+.admin{min-height:100vh;display:grid;grid-template-columns:220px minmax(0,1fr)}
+.admin aside{background:var(--ink-2);border-right:1px solid var(--line);padding:20px 14px;display:grid;align-content:start;gap:4px;position:sticky;top:0;height:100vh}
+.admin aside .logo{margin:0 8px 18px;font-size:18px}
+.admin aside a{display:block;text-decoration:none;color:var(--muted);padding:9px 12px;border-radius:8px;font-weight:500}
+.admin aside a:hover{background:var(--ink-3);color:var(--fg)}
+.admin aside form{margin-top:16px}
+.admin main{padding:28px clamp(16px,3vw,40px) 60px;display:grid;gap:24px;align-content:start;min-width:0}
+.admin h1{font-size:30px}
+.admin h2{font-size:20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.stat{background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:4px}
+.stat b{font:800 28px var(--display);font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:14px}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding:8px 10px;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl td a{color:var(--cyan)}
+.scroll{overflow-x:auto;background:var(--ink-2);border:1px solid var(--line);border-radius:14px}
+.acts{display:flex;flex-wrap:wrap;gap:6px}
+.sbtn{font:600 13px var(--body);background:var(--ink-3);border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:6px 10px;cursor:pointer}
+.sbtn:hover{border-color:var(--muted)}
+.sbtn.go{background:var(--marigold);border-color:var(--marigold);color:#1a1100}
+.sbtn.bad{color:var(--danger)}
+.pill{display:inline-block;font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:var(--ink-3);color:var(--muted)}
+.pill.live,.pill.sent,.pill.approved,.pill.published{color:var(--ok)}
+.pill.pending,.pill.draft,.pill.new{color:var(--marigold)}
+.pill.rejected,.pill.closed,.pill.skipped,.pill.dismissed{color:var(--dim)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;align-items:start}
+.preview{width:100%;height:900px;border:1px solid var(--line);border-radius:14px;background:#eef1f6}
+.notice{background:rgba(255,178,63,.1);border:1px solid rgba(255,178,63,.4);border-radius:12px;padding:12px 14px;color:var(--fg);font-size:14px}
+.notice.err{background:rgba(255,122,102,.1);border-color:rgba(255,122,102,.4)}
+pre.log{white-space:pre-wrap;font:12px/1.5 var(--mono);color:var(--muted);margin:0}
+@media (max-width:760px){.admin{grid-template-columns:minmax(0,1fr)}.admin aside{position:static;height:auto;display:flex;flex-wrap:wrap}.admin aside .logo{flex-basis:100%}}
