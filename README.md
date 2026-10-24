@@ -1,49 +1,27 @@
-# TierBridge — Bridge the Gap. Own Your Career.
+# TierBridge
 
-Dark theme with 3D animated branch backgrounds. Full five-section product.
+Verified jobs and a free 3-minute daily brief for Indian engineering students, built per branch (CSE, IT, ECE, MECH, CIVIL, BCA, MCA).
 
-## Five sections
-| Section | What it does |
-|---|---|
-| Home | Dashboard — 3D branch background, hot tools, live feed below |
-| Live Feed | Hacker News API + Dev.to API + TierBridge Intelligence, live |
-| Enterprise Tools | Branch-specific tools — ECE sees chips/IoT, MECH sees CAD/FEA, CIVIL sees BIM/GIS |
-| Roadmaps | 8 career tracks across all branches, 4 phases each |
-| Community | Full LinkedIn-style social — posts, likes, comments, follow, DMs (mutual follows only) |
+## What's here
 
-## 3D Backgrounds (branch-specific)
-- **CSE** — floating laptops, code brackets `</>`, cubes, circuit traces on indigo dark
-- **ECE** — IC chips with pins, resistors, oscilloscope waves, circuit boards on amber dark  
-- **IT** — server racks, cubes, spheres, code symbols on violet dark
-- **MECH** — gears with teeth, hex bolts, lightning bolts, CAD views on golden dark
-- **CIVIL** — I-beams, blueprint grids, cubes, spheres on emerald dark
-- **BCA** — phones, laptops, code symbols on pink dark
-- **MCA** — servers, cubes, code brackets on blue dark
-
-## Deploy in 5 minutes
-```bash
-unzip tierbridge-v3.zip
-cd tb5
-npm install
-npx vercel
-```
+- **Website** (`app/`, `components/site/`): the marketing site with a three.js hero, an interactive daily-brief preview, verified jobs, the semester learning path, partner and pricing sections, and a waitlist signup.
+- **Waitlist API** (`app/api/waitlist`): saves email and branch to Supabase using a server-only key.
+- **Content** (`content/`): `site.ts` holds the sample brief, jobs and paths shown until the daily pipeline is live. `playbooks.json` and `legacy-tracks.ts` keep the interview playbooks and roadmaps from the first version for later use.
 
 ## Run locally
+
 ```bash
 npm install
-npm run dev
-# Open http://localhost:3000
+cp .env.example .env.local   # add your Supabase URL and service role key
+npm run dev                  # http://localhost:3000
 ```
 
-## Revenue model
-| Tier | Price | Included |
-|---|---|---|
-| Free | ₹0 | Live feed · roadmap phases 1–2 · tool previews · basic community |
-| Student | ₹149/month | All roadmaps · all tool guides · salary data · company targets · full community |
-| College B2B | ₹25/student/year | All student features + TPO dashboard |
+## Supabase setup
 
-## Phase 2 additions
-- Supabase — auth + real database for posts, follows, DMs
-- Razorpay — ₹149/month subscription  
-- Resend — weekly email digest
-- TPO dashboard for college admins
+Run `supabase/migrations/001_waitlist.sql` in the Supabase SQL editor. Row level security is on with no policies, so only the server can read or write the waitlist.
+
+## Coming next
+
+1. Daily brief pipeline: fetch news and jobs, summarize with Claude, email and WhatsApp at 7 AM.
+2. Admin panel: review the day's brief, jobs and affiliate picks; see subscribers and clicks.
+3. Verified job board with featured posts, then Pro.
