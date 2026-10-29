@@ -25,6 +25,9 @@ export default function Privacy() {
             <li>We never ask you to pay to apply for a job.</li>
           </ul>
 
+          <h2>Who helps us run it</h2>
+          <p>Your email and branch are stored with Supabase and the brief is sent through Resend. Briefs are written with help from Anthropic&apos;s Claude, which never sees your email address.</p>
+
           <h2>Affiliate links</h2>
           <p>Some course and book links in the brief are affiliate links, always labelled. If you buy through one, TierBridge earns a small commission at no extra cost to you. The free resource is always listed first.</p>
 

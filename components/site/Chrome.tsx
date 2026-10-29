@@ -25,7 +25,7 @@ export function Nav() {
         <Link className="logo" href="/#top" aria-label="TierBridge home"><Logo />TierBridge</Link>
         <ul>
           <li><a href="/#brief">Daily brief</a></li>
-          <li><a href="/#jobs">Verified jobs</a></li>
+          <li><Link href="/jobs">Verified jobs</Link></li>
           <li><a href="/#learn">Learn</a></li>
           <li><a href="/#partners">Employers</a></li>
           <li><a href="/#pricing">Pricing</a></li>
@@ -43,11 +43,12 @@ export function Footer() {
         <span>© {new Date().getFullYear()} TierBridge · Made for engineering students in India</span>
         <nav>
           <a href="/#brief">Daily brief</a>
-          <a href="/#jobs">Jobs</a>
+          <Link href="/jobs">Jobs</Link>
+          <Link href="/briefs">Past briefs</Link>
           <a href="/#partners">Employers</a>
           <a href="/#pricing">Pricing</a>
           <Link href="/privacy">Privacy</Link>
-          <a href="mailto:report@tierbridge.in">Report a scam</a>
+          <Link href="/report">Report a scam</Link>
         </nav>
       </div>
     </footer>

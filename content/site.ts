@@ -99,6 +99,8 @@ export interface Job {
   tags: string[]
   featured?: boolean
   checked: string
+  /** Tracked apply link, present on live jobs. */
+  href?: string
 }
 
 export const JOBS: Job[] = [
