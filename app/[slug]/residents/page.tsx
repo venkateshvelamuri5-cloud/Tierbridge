@@ -30,7 +30,7 @@ export default function Residents() {
   async function doReset(e: FormEvent<HTMLFormElement>) {
     e.preventDefault(); const pw = String(new FormData(e.currentTarget).get('pw') || '');
     if (pw.length < 8) { toast('Use at least 8 characters.', true); return; }
-    await run(async () => { must(await db().rpc('reset_password', { p_user: reset!.user_id, p_new_password: pw })); setResetDone({ login: reset!.login_id, pw }); setReset(null); await s.refresh(); });
+    await run(async () => { must(await db().rpc('reset_password', { p_user: reset!.user_id, p_password: pw })); setResetDone({ login: reset!.login_id, pw }); setReset(null); await s.refresh(); });
   }
   function downloadSheet(rows: any[]) {
     const lines = [['Login ID', 'Flat', 'Role', 'Temporary password'], ...rows.map((r) => [r.login_id, r.unit_number, r.role, r.temp_password])];
