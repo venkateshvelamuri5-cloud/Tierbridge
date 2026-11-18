@@ -5,6 +5,7 @@ import { db, must } from '@/lib/supabase';
 import { addMonths, dateLabel, daysUntil, inr, monthLabel, thisMonth, waLink } from '@/lib/format';
 import { BILLING, PRICE_PER_FLAT } from '@/lib/config';
 import { Badge, Empty, useRun, useToast } from '@/components/ui';
+import { InviteResidentsPrompt } from '@/components/SetupChecklist';
 
 export default function Settings() {
   const s = useSociety();
@@ -67,6 +68,7 @@ function SettingsInner() {
   return (
     <>
       <div className="page-head"><div><h1>Settings</h1><p className="muted">Only admins can change these. Every change is recorded in the activity log.</p></div></div>
+      <InviteResidentsPrompt />
 
       <section className="panel" id="plan">
         <div className="spread"><h2>Your Tierbridge plan</h2><Badge status={s.writable ? st.status : 'read_only'} /></div>

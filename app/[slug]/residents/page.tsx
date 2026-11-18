@@ -3,10 +3,12 @@ import { FormEvent, useState } from 'react';
 import { useSociety, Resident } from '@/lib/society';
 import { db, must } from '@/lib/supabase';
 import { randomPassword, waLink } from '@/lib/format';
+import { useSetup } from '@/components/SetupChecklist';
 import { Modal, useRun, useToast } from '@/components/ui';
 
 export default function Residents() {
   const s = useSociety();
+  const { markSent } = useSetup();
   const toast = useToast();
   const { busy, run } = useRun();
   const [reset, setReset] = useState<Resident | null>(null);
@@ -113,7 +115,7 @@ export default function Residents() {
           <p className="muted">Download the sheet and keep it private. Then post the welcome message in your society’s WhatsApp group.</p>
           <div className="btn-row">
             <button className="btn" onClick={() => created && downloadSheet(created)}>Download login sheet</button>
-            <a className="btn primary" target="_blank" rel="noopener" href={waLink('', groupMsg)}>Post welcome message</a>
+            <a className="btn primary" target="_blank" rel="noopener" href={waLink('', groupMsg)} onClick={markSent}>Post welcome message</a>
           </div>
           {mode === 'random' && created && created.length > 0 && (
             <details><summary>Send each flat its password</summary>
