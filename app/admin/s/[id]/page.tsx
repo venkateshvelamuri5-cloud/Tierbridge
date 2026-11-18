@@ -56,6 +56,11 @@ export default function SocietyDetail({ params }: { params: { id: string } }) {
       setPayFor(null); toast('Payment recorded. The society is now paid.'); await load();
     });
   }
+  const markChecked = () => run(async () => { must(await db().from('societies').update({ verified: true }).eq('id', id)); toast('Marked as checked'); await load(); });
+  const cancel = () => run(async () => {
+    if (!window.confirm(`Cancel ${o.name}? Residents will no longer be able to sign in, and it disappears from search. Its records are kept.`)) return;
+    must(await db().from('societies').update({ status: 'cancelled' }).eq('id', id)); toast('Society cancelled'); await load();
+  });
   const createLogins = (mode: string) => run(async () => { setCreated(must(await db().rpc('create_logins', { p_society: id, p_mode: mode })) as any[]); await load(); });
   const toggleAdmin = (m: any) => run(async () => { must(await db().from('members').update({ is_admin: !m.is_admin }).eq('user_id', m.user_id)); toast('Saved'); await load(); });
   const download = (rows: any[]) => {
@@ -68,8 +73,12 @@ export default function SocietyDetail({ params }: { params: { id: string } }) {
     <>
       <div className="page-head">
         <div><h1>{o.name}</h1><p className="muted">{o.city} · {flats} flats · <Link href={`/${o.slug}`}>/{o.slug}</Link> · created {dateLabel(o.created_at)}{o.template_id ? ` from the ${o.template_id} template` : ''}</p></div>
-        <Badge status={o.status} />
+        <div className="btn-row"><Badge status={o.status} />{o.source === 'self_signup' && <span className="badge info">Self sign-up</span>}</div>
       </div>
+      {o.source === 'self_signup' && !o.verified && (
+        <p className="note warn spread" style={{ marginBottom: 16 }}><span>This society signed itself up. Call its admin ({o.admin_names || 'unknown'}{o.admin_phones ? `, ${o.admin_phones}` : ''}{o.contact_email ? `, ${o.contact_email}` : ''}) to confirm it’s genuine.</span>
+          <span className="btn-row"><button className="btn small good" disabled={busy} onClick={markChecked}>Mark as checked</button>{o.status !== 'cancelled' && <button className="btn small danger" disabled={busy} onClick={cancel}>Cancel society</button>}</span></p>
+      )}
       <div className="stat-row" style={{ marginBottom: 16 }}>
         <div className="glass">{o.status === 'active' ? 'Paid until' : 'Trial ends'}<b>{dateLabel(o.status === 'active' ? o.paid_until : o.trial_ends_on)}</b><span className="small muted">{o.status === 'trial' ? `${daysUntil(o.trial_ends_on)} days left` : ''}</span></div>
         <div className="glass">Logins signed in<b>{o.signed_in} of {o.logins}</b></div>
@@ -123,6 +132,7 @@ export default function SocietyDetail({ params }: { params: { id: string } }) {
         </section>
       </div>
 
+      {(o.source !== 'self_signup' || o.verified) && o.status !== 'cancelled' && <p style={{ marginTop: 16 }}><button className="btn danger small" disabled={busy} onClick={cancel}>Cancel this society</button></p>}
       <section className="panel" style={{ marginTop: 16 }}>
         <h2>Console history</h2>
         {log.length ? <ul className="list">{log.map((l) => <li key={l.id}><div className="log-time">{timeLabel(l.at)}</div>{l.summary}</li>)}</ul> : <Empty>Nothing yet.</Empty>}

@@ -30,6 +30,7 @@ export default function Landing() {
   const [q, setQ] = useState('');
   const [results, setResults] = useState<any[] | null>(null);
   const [form, setForm] = useState<{ done?: any; error?: string; busy?: boolean }>({});
+  const [menu, setMenu] = useState(false);
 
   useEffect(() => {
     if (q.trim().length < 2) { setResults(null); return; }
@@ -58,18 +59,23 @@ export default function Landing() {
       <div className="topnav">
         <nav aria-label="Main" className="glass bar">
           <Link href="/" className="brand"><Logo /> Tierbridge</Link>
-          <a href="#how" className="btn link" style={{ textDecoration: 'none', color: 'var(--ink-2)', padding: '12px 6px' }}>How it works</a>
-          <a href="#features" className="btn link" style={{ textDecoration: 'none', color: 'var(--ink-2)', padding: '12px 6px' }}>Features</a>
-          <a href="#pricing" className="btn link" style={{ textDecoration: 'none', color: 'var(--ink-2)', padding: '12px 6px' }}>Pricing</a>
-          <a href="#register" className="btn primary">Register your society</a>
+          <button type="button" className="btn small menu-toggle" aria-expanded={menu} aria-controls="nav-links" onClick={() => setMenu(!menu)}>{menu ? 'Close' : 'Menu'}</button>
+          <div id="nav-links" className={`nav-links ${menu ? 'open' : ''}`} onClick={() => setMenu(false)}>
+            <a href="#how" className="plain">How it works</a>
+            <a href="#features" className="plain">Features</a>
+            <a href="#pricing" className="plain">Pricing</a>
+            <a href="#find" className="plain">Find your society</a>
+            <Link href="/start" className="btn primary">Start your free month</Link>
+          </div>
         </nav>
       </div>
 
-      <section className="section" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 48, paddingTop: 72 }}>
-        <div style={{ flex: '1 1 460px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <section className="section hero">
+        <div className="hero-copy">
           <h1>Every flat can see where the maintenance money goes.</h1>
           <p style={{ fontSize: '1.15rem', color: 'var(--ink-2)', maxWidth: '34rem' }}>Tierbridge is a shared ledger for apartment societies. Residents pay by UPI and mark it with the reference number, admins verify it, and every expense carries its bill.</p>
-          <div className="glass" style={{ padding: 20, maxWidth: '32rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div className="hero-cta"><Link href="/start" className="btn primary">Start your free month</Link><a href="#how" className="btn">See how it works</a></div>
+          <div className="glass search-card" id="find">
             <label htmlFor="society-search" style={{ fontWeight: 600 }}>Find your apartment</label>
             <input id="society-search" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by society name or city" autoComplete="off" />
             {results && results.length > 0 && (
@@ -85,7 +91,7 @@ export default function Landing() {
             {results && results.length === 0 && <p className="muted">Your society isn’t on Tierbridge yet. <a href="#register" style={{ fontWeight: 600 }}>Register it</a> and we’ll set it up with you.</p>}
           </div>
         </div>
-        <figure className="glass" style={{ flex: '1 1 420px', minWidth: 0, margin: 0, padding: 28, borderRadius: 28, display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <figure className="glass hero-card">
           <div className="spread"><b>November, at a glance</b><span className="small muted">Example building</span></div>
           <div className="mini-building" role="img" aria-label="A building of 15 flats on 5 floors: 11 paid, 2 awaiting an admin check, 2 not paid">
             {SAMPLE.map((w) => <div key={w.no} style={SAMPLE_STYLE[w.s]}>{w.no}</div>)}
@@ -108,7 +114,7 @@ export default function Landing() {
         <h2 className="big">Set up in an evening. Visible to everyone from day one.</h2>
         <ol className="cards" style={{ marginTop: 32 }}>
           {[
-            ['Pick your building', 'Choose from ten common layouts, like stilt + 5 with four flats a floor, or describe your own blocks, floors and plans. Set the maintenance and your UPI ID.'],
+            ['Pick your building', 'Start your free month and choose from common layouts, like stilt + 5 with four flats a floor, or describe your own blocks, floors and plans. Set the maintenance and your UPI ID.'],
             ['Share the logins', 'Every flat gets an owner and a tenant login in one click. Post one message in your WhatsApp group, and each resident sets their own password.'],
             ['Everyone sees the money', 'Who has paid, what was spent and the balance in the fund, with a statement each month you can share in the group.'],
           ].map(([t, b], i) => (
@@ -124,12 +130,12 @@ export default function Landing() {
         </ul>
       </section>
 
-      <section id="pricing" className="section" style={{ display: 'flex', flexWrap: 'wrap', gap: 48, alignItems: 'center' }}>
-        <div style={{ flex: '1 1 400px', minWidth: 0 }} className="stack">
+      <section id="pricing" className="section split">
+        <div className="stack">
           <h2 className="big">One simple price.</h2>
           <p className="muted" style={{ fontSize: '1.1rem', maxWidth: '30rem' }}>Every feature, for every flat. Try it free for a month, with no setup fee and no charge per admin.</p>
         </div>
-        <div className="glass stack" style={{ flex: '1 1 400px', minWidth: 0, padding: 36, borderRadius: 28 }}>
+        <div className="glass stack price-card">
           <p style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: 8 }}><span style={{ fontWeight: 700, fontSize: '4rem', lineHeight: 1, letterSpacing: '-0.03em' }}>₹50</span><span className="muted" style={{ fontSize: '1.1rem' }}>per flat, per year</span></p>
           <p>Your first month is free. After that, a 15-flat building pays ₹750 a year, under ₹5 a month per flat.</p>
           <ul className="muted" style={{ margin: 0, paddingLeft: 20 }}>
@@ -138,17 +144,18 @@ export default function Landing() {
             <li>Notice board and complaints desk</li>
             <li>WhatsApp reminders and sharing</li>
           </ul>
-          <a href="#register" className="btn primary" style={{ alignSelf: 'flex-start' }}>Register your society</a>
+          <div className="btn-row"><Link href="/start" className="btn primary">Start your free month</Link><a href="#register" className="btn">Or let us set it up</a></div>
         </div>
       </section>
 
       <section id="register" className="section">
-        <div className="glass" style={{ padding: 36, borderRadius: 32, display: 'flex', flexWrap: 'wrap', gap: 40 }}>
-          <div style={{ flex: '1 1 300px', minWidth: 0 }} className="stack">
-            <h2 className="big">Register your society</h2>
-            <p className="muted" style={{ fontSize: '1.1rem' }}>Tell us about your building. We’ll call you to set it up from one of our building templates, and your first month is free.</p>
+        <div className="glass reg-card">
+          <div className="stack">
+            <h2 className="big">Prefer us to set it up?</h2>
+            <p className="muted" style={{ fontSize: '1.1rem' }}>Tell us about your building and we’ll call you to set it up together. Your first month is still free.</p>
+            <p className="small muted">Want to start right away? <Link href="/start">Set it up yourself in a few minutes.</Link></p>
           </div>
-          <div style={{ flex: '1 1 500px', minWidth: 0 }}>
+          <div style={{ minWidth: 0 }}>
             {form.done ? (
               <div role="status" className="stack" style={{ padding: 28, borderRadius: 20, background: 'rgba(255,255,255,.8)' }}>
                 <p style={{ fontWeight: 700, fontSize: '1.4rem' }}>Thanks, {form.done.name}.</p>
@@ -164,7 +171,7 @@ export default function Landing() {
                 <label className="field"><span>Mobile number</span><input name="mobile" type="tel" autoComplete="tel" inputMode="tel" required /></label>
                 <label className="field full"><span>Email <span className="muted" style={{ fontWeight: 400 }}>(optional)</span></span><input name="email" type="email" autoComplete="email" /></label>
                 <p role="alert" className="err full">{form.error}</p>
-                <div className="full"><button type="submit" className="btn primary" disabled={form.busy}>Register your society</button></div>
+                <div className="full"><button type="submit" className="btn primary" disabled={form.busy}>Ask us to call you</button></div>
               </form>
             )}
           </div>
@@ -172,7 +179,7 @@ export default function Landing() {
       </section>
 
       <footer className="section" style={{ paddingTop: 0 }}>
-        <div className="glass spread" style={{ padding: '18px 22px', borderRadius: 18 }}>
+        <div className="glass spread foot">
           <span className="muted">Tierbridge is a product of Kasha Tech Solutions.</span>
           <Link href="/admin" className="small">Tierbridge team sign-in</Link>
         </div>

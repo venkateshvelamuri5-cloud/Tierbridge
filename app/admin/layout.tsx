@@ -26,7 +26,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   if (state === 'signin') return <SignIn title="Tierbridge team" subtitle="Sign in to manage societies, trials and subscriptions." hint="Your Tierbridge team login ID." toEmail={(id) => loginEmail(PLATFORM_SLUG, id)} onSignedIn={load} />;
   if (state === 'denied') return <CenterCard><h1>Tierbridge team only</h1><p className="muted">You’re signed in with a society login. Sign out to sign in as the Tierbridge team.</p><button className="btn primary" onClick={signOut}>Sign out</button></CenterCard>;
 
-  const tabs = [{ href: '/admin', label: 'Societies' }, { href: '/admin/new', label: 'New society' }, { href: '/admin/leads', label: 'Registrations' }, { href: '/admin/log', label: 'Console log' }];
+  const tabs = [{ href: '/admin', label: 'Societies' }, { href: '/admin/new', label: 'New society' }, { href: '/admin/templates', label: 'Templates' }, { href: '/admin/leads', label: 'Registrations' }, { href: '/admin/log', label: 'Console log' }];
   return (
     <>
       <header className="topnav"><div className="glass bar">

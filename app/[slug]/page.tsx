@@ -14,6 +14,10 @@ export default function Home() {
   const base = `/${s.society.slug}`;
   const [log, setLog] = useState<any[] | null>(null);
   const [notices, setNotices] = useState<any[] | null>(null);
+  const [welcome, setWelcome] = useState(false);
+  useEffect(() => { if (new URLSearchParams(window.location.search).get('welcome') === '1') setWelcome(true); }, []);
+  const url = typeof window !== 'undefined' ? `${window.location.origin}/${s.society.slug}` : '';
+  const groupMsg = `Our society ${s.society.name} is now on Tierbridge, where every flat can see maintenance payments, expenses and notices.\n\nSign in at ${url}\nLogin ID: your flat number, then -owner or -tenant (for example 101-owner).\nFirst-time password: the same as your login ID. You'll be asked to choose your own.\nThen please add your name and mobile number under My account.`;
 
   useEffect(() => {
     const c = db();
@@ -36,6 +40,16 @@ export default function Home() {
 
   return (
     <>
+      {welcome && (
+        <section className="panel" style={{ marginBottom: 16 }}>
+          <div className="spread"><h2>Welcome to Tierbridge. Your free month runs until {dateLabel(s.society.trial_ends_on)}.</h2><button className="btn small" onClick={() => setWelcome(false)}>Close</button></div>
+          <ol style={{ margin: '12px 0 0', paddingLeft: 20, display: 'grid', gap: 10 }}>
+            <li><Link href={`${base}/settings`}>Set the monthly maintenance and your society’s UPI ID</Link>, so residents can pay.</li>
+            <li>Every flat already has an owner and a tenant login. <a href={`https://wa.me/?text=${encodeURIComponent(groupMsg)}`} target="_blank" rel="noopener">Post the welcome message in your WhatsApp group</a>.</li>
+            <li><Link href={`${base}/residents`}>Make another owner an admin</Link>, so you’re not the only one verifying payments.</li>
+          </ol>
+        </section>
+      )}
       {!s.rates.length && <p className="note" style={{ marginBottom: 16 }}>{s.isAdmin ? <>Set the monthly maintenance and UPI ID in <Link href={`${base}/settings`}>Settings</Link> before residents start paying.</> : 'The admins haven’t set the maintenance amount yet.'}</p>}
       {myStatus && (myStatus === 'unpaid' || myStatus === 'rejected') && s.rates.length > 0 && (
         <p className="note spread" style={{ marginBottom: 16 }}><span>Flat {s.unitById(s.me!.unit_id)?.number}’s maintenance for {monthLabel(thisMonth(), true)} isn’t marked as paid yet.</span><Link className="btn primary small" href={`${base}/pay`}>Pay now</Link></p>

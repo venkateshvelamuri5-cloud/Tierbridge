@@ -6,7 +6,7 @@ import { dateLabel, daysUntil, inr, timeLabel } from '@/lib/format';
 import { PRICE_PER_FLAT } from '@/lib/config';
 import { Badge, Empty, useToast } from '@/components/ui';
 
-const FILTERS: Record<string, string> = { all: 'All societies', ending: 'Trials ending in 7 days', trial: 'On trial', active: 'Paid', read_only: 'Read-only', renewals: 'Renewals in 90 days' };
+const FILTERS: Record<string, string> = { all: 'All societies', unchecked: 'Self sign-ups not checked yet', ending: 'Trials ending in 7 days', trial: 'On trial', active: 'Paid', read_only: 'Read-only', renewals: 'Renewals in 90 days' };
 
 export default function Console() {
   const toast = useToast();
@@ -20,6 +20,7 @@ export default function Console() {
     if (filter === 'ending') return r.status === 'trial' && daysUntil(r.trial_ends_on) <= 7;
     if (filter === 'renewals') return r.status === 'active' && r.paid_until && daysUntil(r.paid_until) <= 90;
     if (filter === 'all') return true;
+    if (filter === 'unchecked') return !r.verified;
     return r.status === filter;
   }), [rows, filter, q]);
 
@@ -46,7 +47,7 @@ export default function Console() {
             <thead><tr><th>Society</th><th>Status</th><th>Trial ends / paid until</th><th className="right">Flats</th><th className="right">Signed in</th><th className="right">Payments, 30 days</th><th>Last activity</th><th>Admins</th></tr></thead>
             <tbody>{list.map((r) => (
               <tr key={r.id}>
-                <td><Link href={`/admin/s/${r.id}`} style={{ fontWeight: 600 }}>{r.name}</Link><div className="small muted">{r.city} · /{r.slug}</div></td>
+                <td><Link href={`/admin/s/${r.id}`} style={{ fontWeight: 600 }}>{r.name}</Link><div className="small muted">{r.city} · /{r.slug}</div>{r.source === 'self_signup' && <span className="badge info" style={{ marginTop: 4 }}>Self sign-up{r.verified ? '' : ' · not checked'}</span>}</td>
                 <td><Badge status={r.status} />{r.discount_pct > 0 || r.fixed_amount != null ? <div className="small muted">custom price</div> : null}</td>
                 <td className="num">{r.status === 'active' ? dateLabel(r.paid_until) : <>{dateLabel(r.trial_ends_on)}{r.status === 'trial' && <div className="small muted">{daysUntil(r.trial_ends_on)} days left</div>}</>}</td>
                 <td className="right num">{r.flats}</td>
