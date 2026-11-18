@@ -1,0 +1,17 @@
+const inrFmt = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2, minimumFractionDigits: 0 });
+export const inr = (n: any) => inrFmt.format(Number(n) || 0);
+const pad = (n: number) => String(n).padStart(2, '0');
+export const todayISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+export const monthOf = (iso: string) => `${String(iso).slice(0, 7)}-01`;
+export const thisMonth = () => monthOf(todayISO());
+export const addMonths = (m: string, k: number) => { const [y, mo] = m.split('-').map(Number); const d = new Date(y, mo - 1 + k, 1); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-01`; };
+export const monthLabel = (m: string, long = false) => new Date(m.slice(0, 10) + 'T00:00:00').toLocaleDateString('en-IN', { month: long ? 'long' : 'short', year: 'numeric' });
+export const dateLabel = (d?: string | null) => d ? new Date(String(d).slice(0, 10) + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+export const timeLabel = (t: string) => new Date(t).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+export const monthsBetween = (a: string, b: string) => { const out: string[] = []; for (let m = a; m <= b; m = addMonths(m, 1)) out.push(m); return out; };
+export const daysUntil = (iso: string) => Math.ceil((new Date(iso + 'T23:59:59').getTime() - Date.now()) / 86400000);
+export const slugify = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g, '').trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-').slice(0, 60);
+export const randomPassword = () => { const a = 'abcdefghjkmnpqrstuvwxyz23456789'; const r = crypto.getRandomValues(new Uint32Array(8)); const s = Array.from(r, (x) => a[x % a.length]).join(''); return s.slice(0, 4) + '-' + s.slice(4); };
+export const waLink = (phone: string, text: string) => { let d = String(phone || '').replace(/\D/g, ''); if (d.length === 10) d = '91' + d; return d ? `https://wa.me/${d}?text=${encodeURIComponent(text)}` : `https://wa.me/?text=${encodeURIComponent(text)}`; };
+export const CATEGORIES = ['Electricity', 'Watchman salary', 'Water', 'Cleaning', 'Repairs', 'Lift', 'Garden', 'Security', 'Miscellaneous'];
+export const TICKET_CATEGORIES = ['Plumbing', 'Electrical', 'Lift', 'Cleaning', 'Security', 'Parking', 'Neighbour', 'Accounts', 'Other'];
