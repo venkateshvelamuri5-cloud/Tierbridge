@@ -181,7 +181,6 @@ export default function Landing() {
       <footer className="section" style={{ paddingTop: 0 }}>
         <div className="glass spread foot">
           <span className="muted">Tierbridge is a product of Kasha Tech Solutions.</span>
-          <Link href="/admin" className="small">Tierbridge team sign-in</Link>
         </div>
       </footer>
     </div>
